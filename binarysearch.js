@@ -34,9 +34,6 @@ function binarySearch(arr, target) {
         }
     }
 
-    const arr2 = [...arr]; //копируем массив, чтобы не изменять исходный
-
-    arr2.splice(left, 0, target); //вставляем элемент в массив на позицию left
     return `Элемент не найден. Позиция для вставки - ${left}`;
 }
 
@@ -165,8 +162,8 @@ function findLessRight(arr) {
         return 'Пустой массив'
     }
 
-    for (let i =0; i<arr.length; i++) { //проходимся по каждому элементу массива
-        fixedNm = arr[i]; //фиксируем текущий элемент
+    for (let i = 0; i < arr.length; i++) { //проходимся по каждому элементу массива
+        let fixedNm = arr[i]; //фиксируем текущий элемент
         let left = i + 1; //устанавливаем левую границу поиска на следующий элемент после текущего
         let right = arr.length - 1; 
         let count = 0;
@@ -177,7 +174,41 @@ function findLessRight(arr) {
         }
         output.push(count); //добавляем количество элементов в массив для фиксированного числа
     }
+    
     return output;
 }
 
 console.log(findLessRight(nums))
+
+
+function findLessRightLogarithmic(arr) {
+    if (arr.length === 0) return 'Пустой массив';
+    
+    let output = new Array(arr.length);
+    let sortedRight = []; // Создаем массив для хранения отсортированных элементов справа
+    
+    // Идем справа налево
+    for (let i = arr.length - 1; i >= 0; i--) {
+        let target = arr[i];
+        let left = 0;
+        let right = sortedRight.length - 1;
+        
+        // Делаем бинарный поиск позиции для target в sortedRight (первое число >= target)
+        while (left <= right) {
+            let mid = Math.floor((left + right) / 2);
+            if (sortedRight[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        output[i] = left;
+        
+        sortedRight.splice(left, 0, target);
+    }
+    
+    return output;
+}
+
+console.log(findLessRightLogarithmic(nums))
